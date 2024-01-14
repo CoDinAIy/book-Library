@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbarClose">close</div>
+        <form action="example.com/path" method="post">
+            <div class="titleOfBook">
+                <label for="titleOfBook">Title:</label>
+                <input type="text" id="titleOfBook" name="titleOfBook" placeholder="" required>
+            </div>
+            <div class="name">
+                <label for="name">Name of Reader:</label>
+                <input type="text" id="name" name="name" placeholder="eg. John" required>
+            </div>
+            <div class="pagesRead">
+                <label for="pagesRead">Pages read:</label>
+                <input type="number" id="pagesRead" name="pagesRead" placeholder="" required>
+            </div>
+            <button class="form-button" type="submit">Submit</button>
+
+        </form>
+    </div>
+    <div class="header">
+        <div class="navButton">x</div>
+        <div class="title">Local Book Library</div>
+        <div class="description">Click the + to add books you have read</div>
+    </div>
+    
+    <div class="main"></div>
+    <div class="footer"></div>
+    </div>
+</body>
+</html>
+
+<script>
+
+    let currentLibrary
+    if(localStorage.getItem("bookName") == "[]") {
+        const myLibrary = ["hRocket League" , "Game Of Thrones" , "Roblox" , "Rocket League" , "Game Of Thrones" , "Roblox" , "Rocket Leagueeee" , "new book"]
+        const myLibraryString = JSON.stringify(myLibrary)
+        localStorage.setItem("bookName", myLibraryString)
+        currentLibrary = JSON.parse(localStorage.getItem("bookName"))
+    }
+    else {
+        currentLibrary = JSON.parse(localStorage.getItem("bookName"))
+    }
+
+
+    const main = document.querySelector(".main")
+    const navButton = document.querySelector(".navButton")
+    const navBar = document.querySelector(".navbar")
+    const navButtonClose = document.querySelector(".navbarClose")
+        
+        
+    const form = document.querySelector("form")
+    form.addEventListener("submit", function(event){
+        event.preventDefault();
+        if (currentLibrary.length != 9) {
+            const bookTitle = document.getElementById("titleOfBook").value
+            console.log(bookTitle)
+            currentLibrary.push(bookTitle)
+
+            const bookIndex = currentLibrary.length - 1
+
+            const newCard = document.createElement("div")
+            newCard.classList.add("bookCard")
+            newCard.setAttribute("id", bookIndex)
+            newCard.setAttribute("data-index", bookTitle)
+
+            const newBook = document.createElement("div")
+            const newCardRemoveBtn = document.createElement("div")
+        
+            newCardRemoveBtn.classList.add("cardRemoveBtn")
+            newCardRemoveBtn.textContent = ("Remove")
+            newCardRemoveBtn.setAttribute("id", bookIndex)
+
+            newBook.textContent = bookTitle
+
+            newCard.appendChild(newBook)
+            newCard.appendChild(newCardRemoveBtn)
+            main.appendChild(newCard);
+
+            addToLibrary()
+
+            listenForRemoveBtn()
+        }
+        else {
+            alert("A maximum of 9 books can be entered!")
+            return
+        }
+    })
+
+    navButton.addEventListener("click", () => {
+        navBar.classList.add("navbarShow")
+        navBar.classList.remove("navbar")
+    })
+
+    navButtonClose.addEventListener("click", () => {
+        navBar.classList.add("navbar")
+        navBar.classList.remove("navbarClose")
+    })
+    
+    
+    function book(
+        ) {
+            for (let i = 0; i < currentLibrary.length; i++) {
+                const card = document.createElement("div");
+                card.classList.add("bookCard");
+                card.setAttribute("id", i )
+                card.setAttribute("data-index", currentLibrary[i])
+
+                const book = document.createElement("div")
+
+                const cardRemoveBtn = document.createElement("div")
+
+                cardRemoveBtn.classList.add("cardRemoveBtn")
+                cardRemoveBtn.textContent = ("Remove")
+                cardRemoveBtn.setAttribute("id", i )
+
+
+                book.textContent = currentLibrary[i]
+
+                card.appendChild(book)
+                card.appendChild(cardRemoveBtn)
+                main.appendChild(card);
+            }
+        }
+        
+        book()
+        listenForRemoveBtn()
+        
+        function addToLibrary() {
+            localStorage.setItem("bookName", JSON.stringify(currentLibrary))
+        }
+        
+        function listenForRemoveBtn() {
+            const removeCard = document.querySelectorAll(".cardRemoveBtn")
+            removeCard.forEach((button) => {
+                button.addEventListener("click", () => {
+                    const cardToRemove = document.getElementById(button.id)
+                    main.removeChild(cardToRemove) 
+                    const removedString = cardToRemove.dataset.index
+                    const indexOfRemovedString = currentLibrary.indexOf(removedString)
+                    currentLibrary.splice(indexOfRemovedString, 1)
+                    localStorage.setItem("bookName", JSON.stringify(currentLibrary))
+                })
+            })
+        }
+
+
+
+        
+        
+</script>
