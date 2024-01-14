@@ -43,14 +43,14 @@
     let currentLibrary
     if(localStorage.getItem("bookName") == "[]") {
         const myLibrary = [
-            {book:"Rocket League 1"},
-            {book:"Rocket League 2"},
-            {book:"Rocket League 3"},
-            {book:"Rocket League 4"},
-            {book:"Rocket League 5"},
-            {book:"Rocket League 6"},
-            {book:"Rocket League 7"},
-            {book:"Rocket League 8"},
+            {book:"Rocket League 1", author:"Psyonix 1", pages:"24", read:"no"},
+            {book:"Rocket League 2", author:"Psyonix 2", pages:"354", read:"no"},
+            {book:"Rocket League 3", author:"Psyonix 3", pages:"54", read:"no"},
+            {book:"Rocket League 4", author:"Psyonix 4", pages:"765", read:"no"},
+            {book:"Rocket League 5", author:"Psyonix 5", pages:"35", read:"no"},
+            {book:"Rocket League 6", author:"Psyonix 6", pages:"978", read:"no"},
+            {book:"Rocket League 7", author:"Psyonix 7", pages:"567", read:"no"},
+            {book:"Rocket League 8", author:"Psyonix 8", pages:"3786", read:"no"},
         ]
         const myLibraryString = JSON.stringify(myLibrary)
         localStorage.setItem("bookName", myLibraryString)
@@ -72,8 +72,14 @@
         event.preventDefault();
         if (currentLibrary.length != 9) {
             const bookTitle = document.getElementById("titleOfBook").value
+            const bookAuthor = document.getElementById("name").value
+            const bookPages = document.getElementById("pagesRead").value
+            const newObject = new Object()
+            newObject.book = bookTitle
+            newObject.author = bookAuthor
+            newObject.pages = bookPages
             console.log(bookTitle)
-            currentLibrary.push(bookTitle)
+            currentLibrary.push(newObject)
 
             const bookIndex = currentLibrary.length - 1
 
@@ -83,6 +89,8 @@
             newCard.setAttribute("data-index", bookTitle)
 
             const newBook = document.createElement("div")
+            const newAuthor = document.createElement("div")
+            const newPages = document.createElement("div")
             const newCardRemoveBtn = document.createElement("div")
         
             newCardRemoveBtn.classList.add("cardRemoveBtn")
@@ -90,8 +98,12 @@
             newCardRemoveBtn.setAttribute("id", bookIndex)
 
             newBook.textContent = bookTitle
+            newAuthor.textContent = bookAuthor
+            newPages.textContent = bookPages
 
             newCard.appendChild(newBook)
+            newCard.appendChild(newAuthor)
+            newCard.appendChild(newPages)
             newCard.appendChild(newCardRemoveBtn)
             main.appendChild(newCard);
 
@@ -125,6 +137,24 @@
                 card.setAttribute("data-index", currentLibrary[i].book)
 
                 const bookNameElement = document.createElement("div")
+                const bookAuthorElement = document.createElement("div")
+                const bookPagesElement = document.createElement("div")
+                const bookReadContainer = document.createElement("div")
+
+                const bookReadYes = document.createElement("img")
+                bookReadYes.setAttribute("src", "grenTick.jpg" )
+                bookReadYes.setAttribute("height", "40px")
+                bookReadYes.setAttribute("width", "40px")
+                bookReadYes.classList.add("readButton")
+
+                const bookReadNo = document.createElement("img")
+                bookReadNo.setAttribute("src", "redCross.jpg" )
+                bookReadNo.setAttribute("height", "40px")
+                bookReadNo.setAttribute("width", "40px")
+                bookReadNo.classList.add("readButton")
+
+
+
 
                 const cardRemoveBtn = document.createElement("div")
 
@@ -134,8 +164,19 @@
 
 
                 bookNameElement.textContent = currentLibrary[i].book
+                bookAuthorElement.textContent = currentLibrary[i].author
+                bookPagesElement.textContent = currentLibrary[i].pages
+
+                // if(currentLibrary[i].read ==="no") {
+                //     bookReadYes.textContent = "Not Read"
+                // }
 
                 card.appendChild(bookNameElement)
+                card.appendChild(bookAuthorElement)
+                card.appendChild(bookPagesElement)
+                bookReadContainer.appendChild(bookReadYes)
+                bookReadContainer.appendChild(bookReadNo)
+                card.appendChild(bookReadContainer)
                 card.appendChild(cardRemoveBtn)
                 main.appendChild(card);
             }
@@ -159,8 +200,8 @@
                     console.log(removedString)
                     index = currentLibrary.findIndex(x => x.book === removedString);
                     console.log(index)
-                    console.log(currentLibrary)
                     currentLibrary.splice(index, 1)
+                    console.log(currentLibrary)
                     localStorage.setItem("bookName", JSON.stringify(currentLibrary))
                 })
             })

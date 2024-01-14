@@ -74,3 +74,9 @@ button {
     padding: 10px;
 }
 
+.readButton {
+    border-radius: 25%;
+    outline: solid 2px black;
+    margin: 5px;
+}
+
