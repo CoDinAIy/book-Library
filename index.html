@@ -42,7 +42,16 @@
 
     let currentLibrary
     if(localStorage.getItem("bookName") == "[]") {
-        const myLibrary = ["hRocket League" , "Game Of Thrones" , "Roblox" , "Rocket League" , "Game Of Thrones" , "Roblox" , "Rocket Leagueeee" , "new book"]
+        const myLibrary = [
+            {book:"Rocket League 1"},
+            {book:"Rocket League 2"},
+            {book:"Rocket League 3"},
+            {book:"Rocket League 4"},
+            {book:"Rocket League 5"},
+            {book:"Rocket League 6"},
+            {book:"Rocket League 7"},
+            {book:"Rocket League 8"},
+        ]
         const myLibraryString = JSON.stringify(myLibrary)
         localStorage.setItem("bookName", myLibraryString)
         currentLibrary = JSON.parse(localStorage.getItem("bookName"))
@@ -113,9 +122,9 @@
                 const card = document.createElement("div");
                 card.classList.add("bookCard");
                 card.setAttribute("id", i )
-                card.setAttribute("data-index", currentLibrary[i])
+                card.setAttribute("data-index", currentLibrary[i].book)
 
-                const book = document.createElement("div")
+                const bookNameElement = document.createElement("div")
 
                 const cardRemoveBtn = document.createElement("div")
 
@@ -124,9 +133,9 @@
                 cardRemoveBtn.setAttribute("id", i )
 
 
-                book.textContent = currentLibrary[i]
+                bookNameElement.textContent = currentLibrary[i].book
 
-                card.appendChild(book)
+                card.appendChild(bookNameElement)
                 card.appendChild(cardRemoveBtn)
                 main.appendChild(card);
             }
@@ -144,10 +153,14 @@
             removeCard.forEach((button) => {
                 button.addEventListener("click", () => {
                     const cardToRemove = document.getElementById(button.id)
+                    console.log(button.id)
                     main.removeChild(cardToRemove) 
                     const removedString = cardToRemove.dataset.index
-                    const indexOfRemovedString = currentLibrary.indexOf(removedString)
-                    currentLibrary.splice(indexOfRemovedString, 1)
+                    console.log(removedString)
+                    index = currentLibrary.findIndex(x => x.book === removedString);
+                    console.log(index)
+                    console.log(currentLibrary)
+                    currentLibrary.splice(index, 1)
                     localStorage.setItem("bookName", JSON.stringify(currentLibrary))
                 })
             })
