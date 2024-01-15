@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="navbarClose">close</div>
         <form action="example.com/path" method="post">
             <div class="titleOfBook">
                 <label for="titleOfBook">Title:</label>
@@ -27,7 +26,6 @@
         </form>
     </div>
     <div class="header">
-        <div class="navButton">x</div>
         <div class="title">Local Book Library</div>
         <div class="description">Click the + to add books you have read</div>
     </div>
@@ -62,9 +60,7 @@
 
 
     const main = document.querySelector(".main")
-    const navButton = document.querySelector(".navButton")
-    const navBar = document.querySelector(".navbar")
-    const navButtonClose = document.querySelector(".navbarClose")
+
         
         
     const form = document.querySelector("form")
@@ -91,10 +87,28 @@
             const newBook = document.createElement("div")
             const newAuthor = document.createElement("div")
             const newPages = document.createElement("div")
+            const newReadContainer = document.createElement("div")
+
+            const newBookReadYes = document.createElement("img")
+            newBookReadYes.setAttribute("src", "grenTick.jpg" )
+            newBookReadYes.setAttribute("height", "40px")
+            newBookReadYes.setAttribute("width", "40px")
+            newBookReadYes.classList.add("readButton")
+            newBookReadYes.setAttribute("id", bookIndex)
+            newBookReadYes.classList.add("green")
+
+            const newBookReadNo = document.createElement("img")
+            newBookReadNo.setAttribute("src", "redCross.jpg" )
+            newBookReadNo.setAttribute("height", "40px")
+            newBookReadNo.setAttribute("width", "40px")
+            newBookReadNo.classList.add("readButton")
+            newBookReadNo.setAttribute("id", bookIndex)
+            newBookReadNo.classList.add("red")
+
+
             const newCardRemoveBtn = document.createElement("div")
-        
             newCardRemoveBtn.classList.add("cardRemoveBtn")
-            newCardRemoveBtn.textContent = ("Remove")
+            newCardRemoveBtn.textContent = ("Remove Book From List")
             newCardRemoveBtn.setAttribute("id", bookIndex)
 
             newBook.textContent = bookTitle
@@ -104,9 +118,12 @@
             newCard.appendChild(newBook)
             newCard.appendChild(newAuthor)
             newCard.appendChild(newPages)
+            newReadContainer.appendChild(newBookReadYes)
+            newReadContainer.appendChild(newBookReadNo)
+            newCard.appendChild(newReadContainer)
             newCard.appendChild(newCardRemoveBtn)
             main.appendChild(newCard);
-
+            
             addToLibrary()
 
             listenForRemoveBtn()
@@ -117,15 +134,8 @@
         }
     })
 
-    navButton.addEventListener("click", () => {
-        navBar.classList.add("navbarShow")
-        navBar.classList.remove("navbar")
-    })
-
-    navButtonClose.addEventListener("click", () => {
-        navBar.classList.add("navbar")
-        navBar.classList.remove("navbarClose")
-    })
+   
+ 
     
     
     function book(
@@ -139,27 +149,35 @@
                 const bookNameElement = document.createElement("div")
                 const bookAuthorElement = document.createElement("div")
                 const bookPagesElement = document.createElement("div")
-                const bookReadContainer = document.createElement("div")
+                const bookReadContainerELement = document.createElement("div")
 
                 const bookReadYes = document.createElement("img")
                 bookReadYes.setAttribute("src", "grenTick.jpg" )
                 bookReadYes.setAttribute("height", "40px")
                 bookReadYes.setAttribute("width", "40px")
                 bookReadYes.classList.add("readButton")
+                bookReadYes.setAttribute("id", i)
+                bookReadYes.classList.add("green")
+
 
                 const bookReadNo = document.createElement("img")
                 bookReadNo.setAttribute("src", "redCross.jpg" )
                 bookReadNo.setAttribute("height", "40px")
                 bookReadNo.setAttribute("width", "40px")
                 bookReadNo.classList.add("readButton")
+                bookReadNo.setAttribute("id", i)
+                bookReadNo.classList.add("red")
 
-
-
+                if (currentLibrary[i].read == "no") {
+                    bookReadNo.classList.add("clicked")
+                } else if (currentLibrary[i].read == "yes"){
+                    bookReadYes.classList.add("clicked")
+                }
 
                 const cardRemoveBtn = document.createElement("div")
 
                 cardRemoveBtn.classList.add("cardRemoveBtn")
-                cardRemoveBtn.textContent = ("Remove")
+                cardRemoveBtn.textContent = ("Remove Book From List")
                 cardRemoveBtn.setAttribute("id", i )
 
 
@@ -174,9 +192,9 @@
                 card.appendChild(bookNameElement)
                 card.appendChild(bookAuthorElement)
                 card.appendChild(bookPagesElement)
-                bookReadContainer.appendChild(bookReadYes)
-                bookReadContainer.appendChild(bookReadNo)
-                card.appendChild(bookReadContainer)
+                bookReadContainerELement.appendChild(bookReadYes)
+                bookReadContainerELement.appendChild(bookReadNo)
+                card.appendChild(bookReadContainerELement)
                 card.appendChild(cardRemoveBtn)
                 main.appendChild(card);
             }
@@ -207,8 +225,42 @@
             })
         }
 
+const readButtons = document.querySelectorAll(".readButton")
+readButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+        const clickedReadButton = e.target
+        const clickedReadButtonId = clickedReadButton.id
+        console.log(clickedReadButton)
+
+        const clickedReadButtonCell = document.getElementById(clickedReadButtonId)
+        console.log(clickedReadButtonCell)
+
+        if (clickedReadButton.classList.contains("red")) {
+            const buttonToUnclick = clickedReadButtonCell.querySelector(".green")
+            console.log(buttonToUnclick)
+            buttonToUnclick.classList.remove("clicked")
+            currentLibrary[clickedReadButtonId].read = "no"
+            console.log(currentLibrary)
+            localStorage.setItem("bookName", JSON.stringify(currentLibrary))
+
+        } else {
+            const buttonToUnclick = clickedReadButtonCell.querySelector(".red")
+            console.log(buttonToUnclick)
+            buttonToUnclick.classList.remove("clicked")
+            currentLibrary[clickedReadButtonId].read = "yes"
+            console.log(currentLibrary)
+            localStorage.setItem("bookName", JSON.stringify(currentLibrary))
+
+        }
 
 
+
+
+        clickedReadButton.classList.add("clicked")
+    })
+})
+
+        
         
         
 </script>
