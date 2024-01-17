@@ -5,17 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Salsa&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="navbar">
         <form action="example.com/path" method="post">
             <div class="titleOfBook">
                 <label for="titleOfBook">Title:</label>
-                <input type="text" id="titleOfBook" name="titleOfBook" placeholder="" required>
+                <input type="text" id="titleOfBook" name="titleOfBook" placeholder="" maxlength="30" required>
             </div>
             <div class="name">
                 <label for="name">Name of Reader:</label>
-                <input type="text" id="name" name="name" placeholder="eg. John" required>
+                <input type="text" id="name" name="name" placeholder="eg. John" maxlength="30" required>
             </div>
             <div class="pagesRead">
                 <label for="pagesRead">Pages read:</label>
@@ -41,14 +44,13 @@
     let currentLibrary
     if(localStorage.getItem("bookName") == "[]") {
         const myLibrary = [
-            {book:"Rocket League 1", author:"Psyonix 1", pages:"24", read:"no"},
-            {book:"Rocket League 2", author:"Psyonix 2", pages:"354", read:"no"},
-            {book:"Rocket League 3", author:"Psyonix 3", pages:"54", read:"no"},
-            {book:"Rocket League 4", author:"Psyonix 4", pages:"765", read:"no"},
-            {book:"Rocket League 5", author:"Psyonix 5", pages:"35", read:"no"},
-            {book:"Rocket League 6", author:"Psyonix 6", pages:"978", read:"no"},
-            {book:"Rocket League 7", author:"Psyonix 7", pages:"567", read:"no"},
-            {book:"Rocket League 8", author:"Psyonix 8", pages:"3786", read:"no"},
+            {book:"Murdle", author:"G. T. Karber", pages:"0", read:"no"},
+            {book:"Politics On the Edge", author:"Rory Stewart", pages:"0", read:"no"},
+            {book:"Impossible Creatures", author:"Katherine Rundell", pages:"0", read:"no"},
+            {book:"Heartstopper Volume 5", author:"Alice Oseman", pages:"0", read:"no"},
+            {book:"The Wager", author:"David Grann", pages:"0", read:"no"},
+            {book:"Private Eye Annual", author:"Ian Hislop", pages:"0", read:"no"},
+            {book:"Iron Flame", author:"Rebecca Yarros", pages:"0", read:"no"},
         ]
         const myLibraryString = JSON.stringify(myLibrary)
         localStorage.setItem("bookName", myLibraryString)
@@ -85,9 +87,17 @@
             newCard.setAttribute("data-index", bookTitle)
 
             const newBook = document.createElement("div")
+            newBook.classList.add("nameOfBook")
             const newAuthor = document.createElement("div")
-            const newPages = document.createElement("div")
+            newAuthor.classList.add("nameOfAuthor")
+            
             const newReadContainer = document.createElement("div")
+            const newPagesContainer = document.createElement("div")
+            newPagesContainer.classList.add("pageContainer")
+            const newPages = document.createElement("div")
+            const newEditPages = document.createElement("button")
+            newEditPages.classList.add("edit")
+            newEditPages.textContent = "Edit No. of Pages"
 
             const newBookReadYes = document.createElement("img")
             newBookReadYes.setAttribute("src", "grenTick.jpg" )
@@ -117,7 +127,9 @@
 
             newCard.appendChild(newBook)
             newCard.appendChild(newAuthor)
-            newCard.appendChild(newPages)
+            newPagesContainer.appendChild(newPages)
+            newPagesContainer.appendChild(newEditPages)
+            newCard.appendChild(newPagesContainer)
             newReadContainer.appendChild(newBookReadYes)
             newReadContainer.appendChild(newBookReadNo)
             newCard.appendChild(newReadContainer)
@@ -127,6 +139,7 @@
             addToLibrary()
 
             listenForRemoveBtn()
+            listenForEditBtn()
         }
         else {
             alert("A maximum of 9 books can be entered!")
@@ -138,8 +151,7 @@
  
     
     
-    function book(
-        ) {
+    function book() {
             for (let i = 0; i < currentLibrary.length; i++) {
                 const card = document.createElement("div");
                 card.classList.add("bookCard");
@@ -147,8 +159,19 @@
                 card.setAttribute("data-index", currentLibrary[i].book)
 
                 const bookNameElement = document.createElement("div")
+                bookNameElement.classList.add("nameOfBook")
                 const bookAuthorElement = document.createElement("div")
+                bookAuthorElement.classList.add("nameOfAuthor")
+
+
+                const bookPagesContainer = document.createElement("div")
+                bookPagesContainer.classList.add("pageContainer")
                 const bookPagesElement = document.createElement("div")
+                bookPagesElement.classList.add("pages")
+                const bookEditPagesButton = document.createElement("button")
+                bookEditPagesButton.classList.add("edit")
+                bookEditPagesButton.setAttribute("id", i)
+
                 const bookReadContainerELement = document.createElement("div")
 
                 const bookReadYes = document.createElement("img")
@@ -184,14 +207,13 @@
                 bookNameElement.textContent = currentLibrary[i].book
                 bookAuthorElement.textContent = currentLibrary[i].author
                 bookPagesElement.textContent = currentLibrary[i].pages
-
-                // if(currentLibrary[i].read ==="no") {
-                //     bookReadYes.textContent = "Not Read"
-                // }
+                bookEditPagesButton.textContent = "Edit No. of Pages"
 
                 card.appendChild(bookNameElement)
                 card.appendChild(bookAuthorElement)
-                card.appendChild(bookPagesElement)
+                bookPagesContainer.appendChild(bookPagesElement)
+                bookPagesContainer.appendChild(bookEditPagesButton)
+                card.appendChild(bookPagesContainer)
                 bookReadContainerELement.appendChild(bookReadYes)
                 bookReadContainerELement.appendChild(bookReadNo)
                 card.appendChild(bookReadContainerELement)
@@ -202,6 +224,50 @@
         
         book()
         listenForRemoveBtn()
+        listenForEditBtn()
+
+        function listenForEditBtn() {
+            const editButton = document.querySelectorAll(".edit")
+            editButton.forEach((button) => {
+                button.addEventListener("click", (e) => {
+                    const cellId = e.target.id
+                    const cellToEdit = document.getElementById(cellId)
+
+                    const cellContainer = cellToEdit.querySelector(".pageContainer")
+                    const pageToEdit = cellContainer.querySelector("div")
+                    console.log(pageToEdit)
+
+                    const editForm = document.createElement("form")
+                    editForm.classList.add("editForm")
+                    const editPagesInput = document.createElement("input")
+                    editPagesInput.classList.add("editPagesInput")
+                    editPagesInput.setAttribute("type", "number")
+                    editPagesInput.setAttribute("value", pageToEdit.textContent)
+                    const submitEditedPage = document.createElement("button")
+                    submitEditedPage.classList.add("submitEdit")
+                    submitEditedPage.textContent = "Submit"
+
+                    submitEditedPage.addEventListener("click", () => {
+                        const editedPage = editPagesInput.value
+                        currentLibrary[cellId].pages = editedPage
+                        localStorage.setItem("bookName", JSON.stringify(currentLibrary))
+                        console.log("clicked")
+                    })
+
+
+                    editForm.appendChild(editPagesInput)
+                    editForm.appendChild(submitEditedPage)
+                    cellContainer.replaceWith(editForm)
+
+                    console.log(cellContainer)
+                })
+            })      
+                }
+
+            
+
+        
+
         
         function addToLibrary() {
             localStorage.setItem("bookName", JSON.stringify(currentLibrary))
