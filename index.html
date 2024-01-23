@@ -43,6 +43,7 @@
 
     let currentLibrary
     if(localStorage.getItem("bookName") == "[]") {
+
         const myLibrary = [
             {book:"Murdle", author:"G. T. Karber", pages:"0", read:"no"},
             {book:"Politics On the Edge", author:"Rory Stewart", pages:"0", read:"no"},
@@ -60,6 +61,18 @@
         currentLibrary = JSON.parse(localStorage.getItem("bookName"))
     }
 
+    class Book {
+            constructor(book, author, pages, read) {
+                this.book = book
+                this.author = author
+                this.pages = pages
+                this.read = read
+            }
+            addtoLib() {
+                currentLibrary.push(this)
+            }
+        }
+
 
     const main = document.querySelector(".main")
 
@@ -72,12 +85,9 @@
             const bookTitle = document.getElementById("titleOfBook").value
             const bookAuthor = document.getElementById("name").value
             const bookPages = document.getElementById("pagesRead").value
-            const newObject = new Object()
-            newObject.book = bookTitle
-            newObject.author = bookAuthor
-            newObject.pages = bookPages
-            console.log(bookTitle)
-            currentLibrary.push(newObject)
+            const book = new Book(bookTitle, bookAuthor, bookPages, "no")
+            book.addtoLib()
+
 
             const bookIndex = currentLibrary.length - 1
 
@@ -98,6 +108,7 @@
             const newEditPages = document.createElement("button")
             newEditPages.classList.add("edit")
             newEditPages.textContent = "Edit No. of Pages"
+            newEditPages.setAttribute("id", bookIndex )
 
             const newBookReadYes = document.createElement("img")
             newBookReadYes.setAttribute("src", "grenTick.jpg" )
@@ -140,6 +151,7 @@
 
             listenForRemoveBtn()
             listenForEditBtn()
+            listenForPageBtn()
         }
         else {
             alert("A maximum of 9 books can be entered!")
@@ -225,6 +237,7 @@
         book()
         listenForRemoveBtn()
         listenForEditBtn()
+        listenForPageBtn()
 
         function listenForEditBtn() {
             const editButton = document.querySelectorAll(".edit")
@@ -291,40 +304,43 @@
             })
         }
 
-const readButtons = document.querySelectorAll(".readButton")
-readButtons.forEach((button) => {
-    button.addEventListener("click", (e) => {
-        const clickedReadButton = e.target
-        const clickedReadButtonId = clickedReadButton.id
-        console.log(clickedReadButton)
 
-        const clickedReadButtonCell = document.getElementById(clickedReadButtonId)
-        console.log(clickedReadButtonCell)
-
-        if (clickedReadButton.classList.contains("red")) {
-            const buttonToUnclick = clickedReadButtonCell.querySelector(".green")
-            console.log(buttonToUnclick)
-            buttonToUnclick.classList.remove("clicked")
-            currentLibrary[clickedReadButtonId].read = "no"
-            console.log(currentLibrary)
-            localStorage.setItem("bookName", JSON.stringify(currentLibrary))
-
-        } else {
-            const buttonToUnclick = clickedReadButtonCell.querySelector(".red")
-            console.log(buttonToUnclick)
-            buttonToUnclick.classList.remove("clicked")
-            currentLibrary[clickedReadButtonId].read = "yes"
-            console.log(currentLibrary)
-            localStorage.setItem("bookName", JSON.stringify(currentLibrary))
-
-        }
-
-
-
-
-        clickedReadButton.classList.add("clicked")
-    })
-})
+    function listenForPageBtn() {
+        const readButtons = document.querySelectorAll(".readButton")
+        readButtons.forEach((button) => {
+            button.addEventListener("click", (e) => {
+                const clickedReadButton = e.target
+                const clickedReadButtonId = clickedReadButton.id
+                console.log(clickedReadButton)
+        
+                const clickedReadButtonCell = document.getElementById(clickedReadButtonId)
+                console.log(clickedReadButtonCell)
+        
+                if (clickedReadButton.classList.contains("red")) {
+                    const buttonToUnclick = clickedReadButtonCell.querySelector(".green")
+                    console.log(buttonToUnclick)
+                    buttonToUnclick.classList.remove("clicked")
+                    currentLibrary[clickedReadButtonId].read = "no"
+                    console.log(currentLibrary)
+                    localStorage.setItem("bookName", JSON.stringify(currentLibrary))
+        
+                } else {
+                    const buttonToUnclick = clickedReadButtonCell.querySelector(".red")
+                    console.log(buttonToUnclick)
+                    buttonToUnclick.classList.remove("clicked")
+                    currentLibrary[clickedReadButtonId].read = "yes"
+                    console.log(currentLibrary)
+                    localStorage.setItem("bookName", JSON.stringify(currentLibrary))
+        
+                }
+        
+        
+        
+        
+                clickedReadButton.classList.add("clicked")
+            })
+        })
+    }
 
         
         
